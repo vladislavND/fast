@@ -7,6 +7,9 @@ class Shop(BaseModel):
     name: str
     url: str
 
+    class Config:
+        orm_mode = True
+
 
 class ShopOut(Shop):
     id: int

@@ -23,7 +23,7 @@ class Product(Base):
     available_count = Column(Integer, nullable=True)
     url = Column(String, nullable=True)
     date = Column(Date, autoincrement=date)
-    shop_id = Column(Integer, ForeignKey('shops.id'))
+    shop_id = Column(Integer, ForeignKey('shop.id'))
     shop = relationship('Shop', back_populates="products")
 
 

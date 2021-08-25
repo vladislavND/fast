@@ -4,7 +4,6 @@ from sqlalchemy import create_engine
 
 
 engine = create_engine('postgresql://postgres:postgres@localhost:5432/fast')
-Session = sessionmaker(bind=engine)
-sessions = Session()
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

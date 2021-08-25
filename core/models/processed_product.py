@@ -4,8 +4,8 @@ from sqlalchemy.orm import relationship
 from core.db.database import Base
 
 
-class FilterProduct(Base):
-    __tablename__ = 'filter_products'
+class ProcessedProduct(Base):
+    __tablename__ = 'processed_products'
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     price = Column(DECIMAL)
@@ -24,5 +24,6 @@ class FilterProduct(Base):
     available = Column(Boolean, nullable=True)
     available_count = Column(Integer, nullable=True)
     date = Column(Date)
-    shop_id = Column(Integer, ForeignKey('shops.id'))
-    shop = relationship('Shop', back_populates="filter_products")
+    shop_id = Column(Integer, ForeignKey('shop.id'))
+
+    shop = relationship('Shop', back_populates="processed_products")
