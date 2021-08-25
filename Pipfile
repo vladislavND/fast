@@ -8,6 +8,13 @@ fastapi = {extras = ["all"], version = "*"}
 sqlalchemy = "*"
 psycopg2-binary = "*"
 passlib = "*"
+scrapyd = "*"
+setuptools = "*"
+scrapyd-client = "*"
+twisted = "*"
+scrapy = "==2.4.1"
+jobid = "*"
+running = "*"
 
 [dev-packages]
 
