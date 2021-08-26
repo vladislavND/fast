@@ -13,6 +13,7 @@ def get_products(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_product(db: Session, product: schema.ProductBase):
+    print(product)
     db_product = model.Product(**product.dict())
     db.add(db_product)
     db.commit()

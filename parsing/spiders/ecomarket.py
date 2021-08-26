@@ -8,6 +8,14 @@ import requests
 from parsing.methods import telegram_info
 
 
+def send_products(products):
+
+    rq = requests.post('http://127.0.0.1:8000/api/products', json=products)
+    return rq.json()
+
+products = []
+
+
 class EcomarketSpider(scrapy.Spider):
     name = 'ecomarket'
     allowed_domains = ['api.ecomarket.ru',]
@@ -46,20 +54,25 @@ class EcomarketSpider(scrapy.Spider):
             except:
                 time.sleep(5)
 
-            yield {
-                'belki': response_data['bel_amount'],
+            product = {
+                'attributes': f"Белки: {response_data['bel_amount']}",
                 'image_url': response_data['big'],
-                'ed_izm': response_data['ed_izm'],
+                'unit': response_data['ed_izm'],
                 'category': self.get_categories(groups),
                 'article': response_data['id'],
-                'old_price': response_data['old_price'],
+                'sale_price': response_data['old_price'],
                 'price': response_data['price'],
                 'name': response_data['title'],
                 'url': response_data['url'],
-                'ves': response_data['peramount']
+                'weight': response_data['peramount'],
+                'shop_id': 2
             }
+            products.append(product)
+
+            yield product
 
     def close(self, reason):
+        send_products(products)
         telegram_info(self.name)
 
 

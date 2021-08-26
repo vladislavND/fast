@@ -4,6 +4,16 @@ from scrapy.spiders import SitemapSpider
 from w3lib.html import remove_tags
 
 from parsing.methods import telegram_info
+import requests
+from core.schemas.product import ProductBase
+
+
+def send_products(products):
+
+    rq = requests.post('http://127.0.0.1:8000/api/products', json=products)
+    return rq.json()
+
+products = []
 
 
 class FunduchokSpider(SitemapSpider):
@@ -40,19 +50,23 @@ class FunduchokSpider(SitemapSpider):
         category = '|'.join(category_list)
         href = response.url
         self.articles.append(product_id)
-
-        yield {
+        product = {
             'name': prod_name,
             'price': price,
-            'ves': ves,
-            'ed_izm': ed_izm,
+            'weight': ves,
+            'unit': ed_izm,
             'image_url': image_url,
             'category': category,
             'url': href,
             'article': product_id,
+            'shop_id': 1
         }
+        products.append(product)
+
+        yield product
 
     def close(self, reason):
+        send_products(products)
         telegram_info(self.name)
 
 

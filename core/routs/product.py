@@ -20,8 +20,8 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
 
 
 @router.post('/product')
-def create_product(product: product.ProductBase, db: Session = Depends(get_db)):
-    item = crud.create_product(db, product)
+def create_product(item: product.ProductBase, db: Session = Depends(get_db)):
+    crud.create_product(db, item)
     return item
 
 

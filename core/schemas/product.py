@@ -9,8 +9,9 @@ class ProductBase(BaseModel):
     name: str
     price: Decimal
     sale_price: Optional[Decimal] = None
+    article: Optional[str] = None
     description: Optional[str] = None
-    weight: Optional[int] = None
+    weight: Optional[str] = None
     unit: Optional[str] = None
     sale: Optional[int] = None
     tags: Optional[str] = None
@@ -19,7 +20,9 @@ class ProductBase(BaseModel):
     available: Optional[bool] = None
     available_count: Optional[int] = None
     url: Optional[str] = None
-    date: date
+    image_url: Optional[str] = None
+    category: Optional[str] = None
+    date: date = None
     shop_id: int
 
     class Config:
