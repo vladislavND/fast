@@ -17,6 +17,8 @@ jobid = "*"
 running = "*"
 products = "*"
 body = "*"
+aiogram = "*"
+bs4 = "*"
 
 [dev-packages]
 
