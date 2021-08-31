@@ -4,22 +4,14 @@ from scrapy.spiders import SitemapSpider
 from w3lib.html import remove_tags
 
 from parsing.methods import telegram_info
-import requests
-from core.schemas.product import ProductBase
-
-
-def send_products(products):
-
-    rq = requests.post('http://127.0.0.1:8000/api/products', json=products)
-    return rq.json()
-
-products = []
+from parsing.request import send_products
 
 
 class FunduchokSpider(SitemapSpider):
     name = "funduchok"
     sitemap_urls = ['https://xn--d1amhfwcd2a.xn--p1ai/sitemap.xml',]
     articles = []
+    products = []
 
     def parse(self, response, **kwargs):
         price_xpath_many = response.xpath('//input[@class="input input--radio"]/@data-price')
@@ -38,12 +30,12 @@ class FunduchokSpider(SitemapSpider):
             ed_izm = re.sub('[^A-Za-z]', '', string_value)
         elif price_xpath_sale:
             price = price_xpath_sale.get()
-            ves = ''
+            ves = None
             ed_izm = 'шт'
         else:
             price = response.xpath('//span[@class="product__card__options__action__value color--price-card"]/text()').get()
             price = re.sub("[^0-9]", "", price)
-            ves = ''
+            ves = None
             ed_izm = 'шт'
         product_id = response.xpath('//input[@type="hidden"]/@value').get()
         category_list = response.xpath('//ul[@class="breadcrumb__list"]/li/a/span/text()').getall()
@@ -61,12 +53,12 @@ class FunduchokSpider(SitemapSpider):
             'article': product_id,
             'shop_id': 1
         }
-        products.append(product)
+        self.products.append(product)
 
         yield product
 
     def close(self, reason):
-        send_products(products)
+        send_products(self.products)
         telegram_info(self.name)
 
 

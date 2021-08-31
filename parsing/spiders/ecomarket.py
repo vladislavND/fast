@@ -6,14 +6,7 @@ from scrapy.http import JsonRequest
 import requests
 
 from parsing.methods import telegram_info
-
-
-def send_products(products):
-
-    rq = requests.post('http://127.0.0.1:8000/api/products', json=products)
-    return rq.json()
-
-products = []
+from parsing.request import send_products
 
 
 class EcomarketSpider(scrapy.Spider):
@@ -21,6 +14,7 @@ class EcomarketSpider(scrapy.Spider):
     allowed_domains = ['api.ecomarket.ru',]
     category = []
     articles = []
+    products = []
 
     def start_requests(self):
         data = {"action":"appStartUp_v3","REGION":"77","AB_CASE":"A","token":"9a32530d9947fdfc546cb2931d6a750e"}
@@ -67,12 +61,12 @@ class EcomarketSpider(scrapy.Spider):
                 'weight': response_data['peramount'],
                 'shop_id': 2
             }
-            products.append(product)
+            self.products.append(product)
 
             yield product
 
     def close(self, reason):
-        send_products(products)
+        send_products(self.products)
         telegram_info(self.name)
 
 

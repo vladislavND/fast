@@ -2,6 +2,7 @@ import scrapy
 import requests
 
 from parsing.methods import telegram_info
+from parsing.request import send_products
 
 
 class UtkonosSpider(scrapy.Spider):
@@ -10,6 +11,7 @@ class UtkonosSpider(scrapy.Spider):
     HEADERS = {'content-type': 'multipart/form-data; boundary=----WebKitFormBoundaryvOKTepCjBBVARAbu'}
     category = []
     articles = []
+    products = []
 
     def start_requests(self):
         url = 'https://www.utkonos.ru/api/v1/goodsCategoriesTreeByChildGet'
@@ -36,21 +38,25 @@ class UtkonosSpider(scrapy.Spider):
                         response_data = response.json().get('Body').get('GoodsItemList')
                         for data_products in response_data:
                             self.articles.append(data_products['Id'])
-                            yield {
+                            product = {
                                 'name': data_products['Name'],
-                                'ed_izm': data_products['GoodsUnitList'][0]['UnitName'],
-                                'ves': data_products['BruttoWeight'],
+                                'unit': data_products['GoodsUnitList'][0]['UnitName'],
+                                'weight': data_products['BruttoWeight'],
                                 'category': value + ' | ' + data_products['DefaultCategoryName'],
                                 'article': data_products['Id'],
                                 'image_url': data_products['ImageBigUrl'],
                                 'price': data_products['Price'],
-                                'url': f'https://www.utkonos.ru/item/{data_products["OriginalId"]}/{data_products["Slug"]}'
+                                'url': f'https://www.utkonos.ru/item/{data_products["OriginalId"]}/{data_products["Slug"]}',
+                                'shop_id': 3
                             }
+                            self.products.append(product)
+                            yield product
                     else:
                         offset = 0
                         break
 
     def close(self, reason):
+        send_products(self.products)
         telegram_info(self.name)
 
 

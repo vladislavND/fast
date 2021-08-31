@@ -11,7 +11,7 @@ from front_bot.request import Request
 async def start(message: types.Message, state: FSMContext):
     msg = "Привет я Парсер БОТ вот что я могу"
     await bot.send_message(
-        chat_id=message.chat.id,
+        chat_id=message.from_user.id,
         text=msg,
         reply_markup=start_keyboard()
     )
@@ -33,7 +33,7 @@ async def send_by_url(message: types.Message):
     request = Request()
     msg = request.get_price(url)
     await bot.send_message(
-        chat_id=message.chat.id,
+        chat_id=message.from_user.id,
         text=msg
     )
 
