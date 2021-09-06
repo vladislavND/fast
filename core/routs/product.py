@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+from starlette.responses import StreamingResponse
 
 from core.schemas import product
 from core.db.dependecy import get_db
@@ -31,4 +32,15 @@ def create_products(products: product.ProductList, db: Session = Depends(get_db)
     return 'Successfully created products'
 
 
+@router.post('/all_xlsx', response_class=StreamingResponse)
+def get_all_xlsx(db: Session = Depends(get_db)):
+    crud.get_all_products(db)
+    file = open('test.xlsx', mode='rb')
+    return StreamingResponse(file, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
+
+@router.post('/all_xlsx/{shop_id}', response_class=StreamingResponse)
+def get_all_products(shop_id: int, db: Session = Depends(get_db)):
+    crud.get_all_products_by_shop_id(db, shop_id)
+    file = open(f'{shop_id}_products.xlsx', mode='rb')
+    return StreamingResponse(file, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

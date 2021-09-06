@@ -2,9 +2,9 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from front_bot.loader import dp, bot, executor
-from front_bot.keyboards.inline import start_keyboard, start_spiders
+from front_bot.keyboards.inline import start_keyboard, start_spiders, shops
 from front_bot.state.user import UserState
-from front_bot.request import Request
+from front_bot.request import Request, Product
 
 
 @dp.message_handler(commands=['start'], state='*')
@@ -14,6 +14,36 @@ async def start(message: types.Message, state: FSMContext):
         chat_id=message.from_user.id,
         text=msg,
         reply_markup=start_keyboard()
+    )
+    await state.finish()
+
+
+@dp.callback_query_handler(text='all_files')
+async def get_all_products(message: types.CallbackQuery):
+    file = Product().get_xlsx_products()
+    await bot.send_document(
+        message.from_user.id,
+        ('products.xlsx', file)
+    )
+
+
+@dp.callback_query_handler(text='shop_file')
+async def get_products_by_shop(message: types.CallbackQuery):
+    await bot.send_message(
+        chat_id=message.from_user.id,
+        text='Выберите магазин',
+        reply_markup=shops()
+    )
+    await UserState.shop.set()
+
+
+@dp.callback_query_handler(state=UserState.shop)
+async def send_file_by_shop_id(message: types.CallbackQuery, state: FSMContext):
+    shop_id = message.data
+    file = Product().get_products_by_shop_id(shop_id)
+    await bot.send_document(
+        message.from_user.id,
+        (f'{shop_id}_products.xlsx', file)
     )
     await state.finish()
 

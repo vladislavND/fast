@@ -19,6 +19,8 @@ products = "*"
 body = "*"
 aiogram = "*"
 bs4 = "*"
+pandas = "*"
+openpyxl = "*"
 
 [dev-packages]
 
