@@ -15,7 +15,6 @@ from core.crud.processed_product import CRUDProcessed
 from core.crud.shop import CRUDShop
 
 
-
 class Manager:
     def __init__(self, shop_name: str, find_date: date = date.today()):
         self.shop_name = shop_name
@@ -42,12 +41,18 @@ class Manager:
         objects = parse_obj_as(List[ProductBase], data)
         CRUDProduct(Product).list_create(session=session, objects=objects)
 
-    def analize(self, session: Session = Session(engine),):
+    def analize(self, session: Session = Session(engine)):
         processed_crud = CRUDProcessed(ProcessedProduct)
         shop_crud = CRUDShop(Shop)
-        processed_product = processed_crud.get_all(session)
-        shop = shop_crud.get_by_name(session, self.shop_name)
-        print(shop.products)
+        shop_id = shop_crud.get_by_name(session, self.shop_name).id
+        processed_product = processed_crud.get_by_shop_id(session, shop_id)
+        print(processed_product)
+        # TODO: Доделать аналитику
+
+
+
+
+
 
 
 

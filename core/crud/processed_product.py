@@ -4,7 +4,7 @@ import typing
 import pandas as pd
 from sqlmodel import Session, select
 
-from core.crud.base import ModelType, CRUDBase
+from core.crud.base import CRUDBase
 from core.crud.product import CRUDProduct
 from core.crud.rf_product import CRUDRF
 from core.models.product import Product
@@ -13,6 +13,11 @@ from core.models.processed_product import ProcessedProduct
 
 
 class CRUDProcessed(CRUDBase):
+
+    def get_by_shop_id(self, session: Session, shop_id: int) -> typing.List[ProcessedProduct]:
+        statement = select(self.model).where(self.model.shop_id == shop_id)
+        products = session.exec(statement).all()
+        return products
 
     def add_processed_products(self, session: Session, file: typing.ByteString, shop_id: int):
         crud_rf = CRUDRF(ProductRF)

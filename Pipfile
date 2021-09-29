@@ -12,10 +12,6 @@ setuptools = "*"
 scrapyd-client = "*"
 twisted = "*"
 scrapy = "==2.4.1"
-jobid = "*"
-running = "*"
-products = "*"
-body = "*"
 aiogram = "*"
 bs4 = "*"
 pandas = "*"
@@ -27,3 +23,6 @@ sqlalchemy = "*"
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true
