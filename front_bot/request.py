@@ -26,26 +26,41 @@ class Request:
 
     def get_spiders(self) -> list:
         data = request(method='GET', url=BASE_URL+'/api/scrapyd/parsing')
-        return data.json()
+        return ['□ ' + spider for spider in data.json()]
 
-    def start_spider(self, spider: str):
-        data = {'spider': spider}
-        request(method='POST', url=BASE_URL+'/api/scrapyd/run', json=data)
+    @classmethod
+    def start_spider(cls, spiders: list):
+        for spider in spiders:
+            data = {'spider': spider}
+            request(method='POST', url=BASE_URL+'/api/scrapyd/run', json=data)
 
 
 class Product:
 
-    def get_xlsx_products(self):
+    @classmethod
+    def get_xlsx_products(cls):
         rs = requests.post(url=BASE_URL+'/api/all_xlsx')
         return rs.content
 
-    def get_products_by_shop_id(self, shop_id):
-        rs = requests.post(url=BASE_URL+f'/api/all_xlsx/{shop_id}')
+    @classmethod
+    def get_products_by_shop_id(cls, shop_name='wildbress'):
+        rs = requests.post(url=BASE_URL+f'/api/all_xlsx/wildbress')
         return rs.content
 
-    def get_shops(self):
+    @classmethod
+    def get_shops(cls):
         rs = requests.get(url=BASE_URL+'/api/shops')
         return rs.json()
+
+    @classmethod
+    def send_processing_product(cls, shop_id, file):
+        requests.post(
+            url=BASE_URL + f'/api/processed_product_xlsx/{shop_id}',
+            files={'file': ('report.xls', file, 'application/vnd.ms-excel',)}
+        )
+
+
+
 
 
 

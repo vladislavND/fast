@@ -9,7 +9,7 @@ def start_keyboard():
         ('Поиск по ссылке', 'search'),
         ('Получить все товары', 'all_files'),
         ('Получить товары магазина', 'shop_file'),
-        # ('Получить товары', 'get'),
+        ('Загрузить стыковку', 'send_processed'),
         # ('Личный кабинет', 'cabinet')
     )
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
@@ -26,7 +26,7 @@ def start_spiders():
 
 
 def shops():
-    shops = Product().get_shops()
+    shops = Product.get_shops()
     btn_text = ((shop['name'], shop['id']) for shop in shops)
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     btn = (types.InlineKeyboardButton(text, callback_data=data) for text, data in btn_text)

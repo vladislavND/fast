@@ -1,46 +1,49 @@
-from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
-from starlette.responses import StreamingResponse
+from typing import List
+import io
 
-from core.schemas import product
+from fastapi import APIRouter, Depends
+from sqlmodel import Session
+from starlette import status
+from starlette.responses import StreamingResponse, FileResponse
+
+
 from core.db.dependecy import get_db
-from core.crud import product as crud
+from core.crud.product import CRUDProduct
+from core.models.product import ProductBase, Product
+from core.utils.manager import Manager
 
 router = APIRouter()
+crud = CRUDProduct(Product)
 
 
-@router.get('/products', response_model=product.ProductListOut)
-def get_products(db: Session = Depends(get_db)):
+@router.get('/products', response_model=List[Product])
+def get_products(session: Session = Depends(get_db)):
+    products = crud.get_all(session)
 
-    return crud.get_products(db)
+    return products
 
 
-@router.get('/product/{product_id}', response_model=product.ProductOut)
-def get_product(product_id: int, db: Session = Depends(get_db)):
-    return crud.get_product(db, product_id)
+@router.get('/product/{product_id}', response_model=Product)
+def get_product(product_id: int, session: Session = Depends(get_db)):
+    product = crud.get(product_id, session=session)
+    return product
 
 
 @router.post('/product')
-def create_product(item: product.ProductBase, db: Session = Depends(get_db)):
-    crud.create_product(db, item)
-    return item
+def create_product(product: ProductBase, session: Session = Depends(get_db)):
+    return crud.create(product, session)
 
 
 @router.post('/products', status_code=status.HTTP_201_CREATED)
-def create_products(products: product.ProductList, db: Session = Depends(get_db)):
-    crud.create_products(db, products)
+def create_products(products: List[ProductBase], session: Session = Depends(get_db)):
+    crud.list_create(products, session)
     return 'Successfully created products'
 
 
-@router.post('/all_xlsx', response_class=StreamingResponse)
-def get_all_xlsx(db: Session = Depends(get_db)):
-    crud.get_all_products(db)
-    file = open('test.xlsx', mode='rb')
-    return StreamingResponse(file, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
-
-@router.post('/all_xlsx/{shop_id}', response_class=StreamingResponse)
-def get_all_products(shop_id: int, db: Session = Depends(get_db)):
-    crud.get_all_products_by_shop_id(db, shop_id)
-    file = open(f'{shop_id}_products.xlsx', mode='rb')
-    return StreamingResponse(file, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+@router.post('/all_xlsx/{shop_name}', response_class=StreamingResponse)
+def get_all_products(shop_name: str):
+    df = Manager(shop_name=shop_name).open()
+    to_write = io.BytesIO()
+    df.to_excel(to_write, index=False)
+    to_write.seek(0)
+    return StreamingResponse(to_write, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

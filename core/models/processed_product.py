@@ -1,29 +1,22 @@
-from sqlalchemy import Column, Boolean, String, Integer, DECIMAL, ForeignKey, Date
-from sqlalchemy.orm import relationship
+import datetime
+from typing import Optional, List
+from decimal import Decimal
 
-from core.db.database import Base
+from sqlmodel import SQLModel, Field, Relationship
+
+from core.models.shop import Shop
 
 
-class ProcessedProduct(Base):
-    __tablename__ = 'processed_products'
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    price = Column(DECIMAL)
-    price_rf = Column(DECIMAL, nullable=True)
-    price_rf_kg = Column(DECIMAL, nullable=True)
-    price_kg = Column(DECIMAL, nullable=True)
-    sale_price = Column(DECIMAL, nullable=True)
-    description = Column(String, nullable=True)
-    weight = Column(String, nullable=True)
-    unit = Column(String, nullable=True)
-    sale = Column(Integer, nullable=True)
-    tags = Column(String, nullable=True)
-    attributes = Column(String, nullable=True)
-    chars = Column(String, nullable=True)
-    different_price = Column(Integer, nullable=True)
-    available = Column(Boolean, nullable=True)
-    available_count = Column(Integer, nullable=True)
-    date = Column(Date)
-    shop_id = Column(Integer, ForeignKey('shop.id'))
+class ProcessedProductBase(SQLModel):
+    price: Decimal
+    price_rf: Optional[Decimal] = None
+    sale_price: Optional[Decimal] = None
+    date: datetime.date = datetime.date.today()
+    article: str
+    article_rf: str
+    shop_id: Optional[int] = Field(default=None, foreign_key='shop.id')
+    shop: List[Shop] = Relationship(back_populates="processed_products")
 
-    shop = relationship('Shop', back_populates="processed_products")
+
+class ProcessedProduct(ProcessedProductBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)

@@ -1,15 +1,17 @@
-from sqlalchemy import Column, String, Integer
+from typing import List, Optional
 
-from core.db.database import Base
-from sqlalchemy.orm import relationship
+from sqlmodel import SQLModel, Relationship, Field
 
 
-class Shop(Base):
-    __tablename__ = 'shop'
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True)
-    url = Column(String)
+class ShopBase(SQLModel):
+    name: str
+    url: str
 
-    products = relationship("Product", back_populates="shop")
-    processed_products = relationship("ProcessedProduct", back_populates="shop")
+    products: List["Product"] = Relationship(back_populates="shop")
+    processed_products: List["ProcessedProduct"] = Relationship(back_populates="shop")
+
+
+class Shop(ShopBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
 

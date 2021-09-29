@@ -1,18 +1,25 @@
-from datetime import date
+import datetime
+from typing import Optional
+from decimal import Decimal
 
-from sqlalchemy import Column, String, DECIMAL, Date, BigInteger
-
-from core.db.database import Base
+from sqlmodel import SQLModel, Field
 
 
-class Price(Base):
-    __tablename__ = "prices"
-    id = Column(BigInteger, primary_key=True)
-    url = Column(String)
-    shop = Column(String)
-    name = Column(String)
-    article = Column(String)
-    price = Column(DECIMAL)
-    sale_price = Column(DECIMAL, nullable=True)
-    different_price = Column(DECIMAL, nullable=True)
-    date = Column(Date, autoincrement=True, default=date.today())
+class PriceBase(SQLModel):
+    url: str
+    shop: str
+    article: str
+    name: str
+    price: Decimal
+    sale_price: Optional[Decimal] = None
+    different_price: Optional[Decimal] = None
+    date: datetime.date = datetime.date.today()
+
+
+class Price(PriceBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+
+class PriceIn(SQLModel):
+    url: str
+    rf_article: Optional[str] = None

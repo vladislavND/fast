@@ -1,9 +1,7 @@
-from core.db.database import SessionLocal
+from core.db.database import engine
+from sqlmodel import Session
 
 
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    with Session(engine) as session:
+        yield session

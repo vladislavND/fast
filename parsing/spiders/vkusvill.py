@@ -4,14 +4,13 @@ import unicodedata
 from scrapy.spiders import SitemapSpider
 
 from parsing.methods import telegram_info
-from parsing.request import send_products
+from core.utils.manager import Manager
 
 
 class VkusvillSpider(SitemapSpider):
     name = "vkusvill"
     sitemap_urls = ['https://vkusvill.ru/upload/sitemap/msk/sitemap_goods.xml',]
-    articles = []
-    products = []
+    manager = Manager(shop_name=name)
 
     def parse(self, response, **kwargs):
         if response.xpath('//img[@class="lazyload"]/@title').get() is not None:
@@ -22,13 +21,11 @@ class VkusvillSpider(SitemapSpider):
             try:
                 ed_izm = response.xpath('//span[@class="Price__unit"]/text()').getall()[1]
                 ves = re.sub("[^0-9]", "", ves_and_year[1])
-                goden = ves_and_year[0]
             except IndexError:
                 print('0 значение')
             category_list = response.xpath('//span[@class="Breadcrumbs__link"]/a/@title').getall()
             id = response.xpath('//div[@class="Product__col Product__col--content js-product-cart js-datalayer-detail'
                                 ' js-datalayer-catalog-list-item"]/@data-xmlid').get()
-            self.articles.append(id)
             product = {
                 'name': name,
                 'unit': ed_izm.replace(' ', '').replace('/', '').replace('\xa0\xa0', ''),
@@ -38,15 +35,13 @@ class VkusvillSpider(SitemapSpider):
                 'url': response.url,
                 'category': category_list,
                 'article': id,
-                'shop_id': 4
             }
-            self.products.append(product)
             yield product
         else:
             pass
 
     def close(self, reason):
-        send_products(self.products)
+        self.manager.create(shop_id=4)
         telegram_info(self.name)
 
 

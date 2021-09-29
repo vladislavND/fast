@@ -2,7 +2,7 @@ import scrapy
 import requests
 
 from parsing.methods import telegram_info
-from parsing.request import send_products
+from core.utils.manager import Manager
 
 
 class UtkonosSpider(scrapy.Spider):
@@ -10,8 +10,7 @@ class UtkonosSpider(scrapy.Spider):
     allowed_domains = ['www.utkonos.ru',]
     HEADERS = {'content-type': 'multipart/form-data; boundary=----WebKitFormBoundaryvOKTepCjBBVARAbu'}
     category = []
-    articles = []
-    products = []
+    manager = Manager(shop_name=name)
 
     def start_requests(self):
         url = 'https://www.utkonos.ru/api/v1/goodsCategoriesTreeByChildGet'
@@ -46,19 +45,18 @@ class UtkonosSpider(scrapy.Spider):
                                 'article': data_products['Id'],
                                 'image_url': data_products['ImageBigUrl'],
                                 'price': data_products['Price'],
+                                'sale_price': data_products['Price'] if data_products['OldPrice'] else None,
                                 'url': f'https://www.utkonos.ru/item/{data_products["OriginalId"]}/{data_products["Slug"]}',
-                                'shop_id': 3
+                                'brand': data_products['Brand'],
                             }
-                            self.products.append(product)
                             yield product
                     else:
                         offset = 0
                         break
 
     def close(self, reason):
-        send_products(self.products)
+        self.manager.create(shop_id=3)
         telegram_info(self.name)
-
 
 
 

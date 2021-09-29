@@ -1,15 +1,18 @@
-from sqlalchemy import Column, String, Integer, Boolean, BigInteger
+from typing import Optional
 
-from core.db.database import Base
+from sqlmodel import SQLModel,  Field
 
 
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True)
-    telegram_id = Column(BigInteger, unique=True)
-    password = Column(String)
-    is_admin = Column(Boolean, default=False)
+class UserBase(SQLModel):
+    username: str
+    telegram_id: int
+    password: str
+    is_admin: bool = False
+
+
+class User(UserBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
 
 
 

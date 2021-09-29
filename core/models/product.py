@@ -1,33 +1,23 @@
-from datetime import date
+import datetime
+from typing import Optional, List
+from decimal import Decimal
 
-from sqlalchemy import Column, Boolean, String, Integer, DECIMAL, ForeignKey, Date
-from sqlalchemy.orm import relationship
+from sqlmodel import SQLModel, Field, Relationship
 
-from core.db.database import Base
+from core.models.shop import Shop
 
 
-class Product(Base):
-    __tablename__ = 'products'
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    article = Column(String, nullable=True)
-    price = Column(DECIMAL)
-    sale_price = Column(DECIMAL, nullable=True)
-    description = Column(String, nullable=True)
-    weight = Column(String, nullable=True)
-    unit = Column(String, nullable=True)
-    sale = Column(Integer, nullable=True)
-    tags = Column(String, nullable=True)
-    attributes = Column(String, nullable=True)
-    chars = Column(String, nullable=True)
-    available = Column(Boolean, nullable=True)
-    available_count = Column(Integer, nullable=True)
-    url = Column(String, nullable=True)
-    image_url = Column(String, nullable=True)
-    category = Column(String, nullable=True)
-    date = Column(Date, autoincrement=date)
-    shop_id = Column(Integer, ForeignKey('shop.id'))
-    shop = relationship('Shop', back_populates="products")
+class ProductBase(SQLModel):
+    article: Optional[str] = None
+    price: Optional[Decimal] = None
+    sale_price: Optional[Decimal] = None
+    date: datetime.date = datetime.date.today()
+    shop_id: Optional[int] = Field(default=None, foreign_key='shop.id')
+    shop: List[Shop] = Relationship(back_populates="products")
+
+
+class Product(ProductBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
 
 
 

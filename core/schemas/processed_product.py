@@ -7,6 +7,8 @@ from core.schemas.product import ProductBase
 
 
 class ProcessedProduct(ProductBase):
+    article: Optional[str] = None
+    article_rf: Optional[str] = None
     price_rf: Optional[Decimal] = None
     price_rf_kg: Optional[Decimal] = None
     price_kg: Optional[Decimal] = None

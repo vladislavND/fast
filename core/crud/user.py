@@ -1,25 +1,28 @@
-from sqlalchemy.orm import Session
+from fastapi import HTTPException
+from sqlmodel import Session, select
 
-from core.models import user as model
-from core.schemas import user as schema
-from utils.security import get_password_hash
-
-
-def get_user(db: Session, telegram_id: int):
-    return db.query(model.User).filter(model.User.telegram_id == telegram_id).first()
+from core.crud.base import CRUDBase, ModelType
+from core.utils.security import get_password_hash
 
 
-def get_users(db: Session, skip: int = 0, limit: int = 100):
-    users = db.query(model.User).offset(skip).limit(limit).all()
-    return users
+class CRUDUser(CRUDBase):
+    def create_user(self, session: Session, user: ModelType) -> ModelType:
+        user.password = get_password_hash(user.password)
+        to_object = self.model.from_orm(user)
+        session.add(to_object)
+        session.commit()
+        session.refresh(to_object)
+        return to_object
+
+    def get_by_telegram_id(self, session: Session, telegram_id: int) -> ModelType:
+        user = session.exec(select(self.model).filter_by(telegram_id=telegram_id)).one()
+        if not user:
+            raise HTTPException(status_code=404, detail=f"{self.model.__name__} by telegram_id {telegram_id} not found")
+        return user
 
 
-def create_user(db: Session, user: schema.UserIn):
-    user.password = get_password_hash(user.password)
-    db_user = model.User(**user.dict())
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return
+
+
+
 
 

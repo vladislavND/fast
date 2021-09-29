@@ -1,3 +1,5 @@
+from datetime import date
+
 from scrapy import signals
 from scrapy.exporters import CsvItemExporter
 
@@ -14,7 +16,7 @@ class ParsingPipeline:
         return pipeline
 
     def spider_opened(self, spider):
-        file = open(f'{spider.name}.csv', 'w+b')
+        file = open(f'parse_files/{spider.name}/{spider.name}_{date.today()}.csv', 'w+b')
         self.files[spider] = file
         self.exporter = CsvItemExporter(file, delimiter=";")
         self.exporter.start_exporting()

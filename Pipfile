@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 fastapi = {extras = ["all"], version = "*"}
-sqlalchemy = "*"
 psycopg2-binary = "*"
 passlib = "*"
 scrapyd = "*"
@@ -21,6 +20,8 @@ aiogram = "*"
 bs4 = "*"
 pandas = "*"
 openpyxl = "*"
+sqlmodel = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 
