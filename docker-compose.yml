@@ -19,3 +19,30 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - ${POSTGRES_PORT}:5432
+
+  api:
+    build: .
+    volumes:
+      - .:/fast
+    container_name: "fast"
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - database
+    command: >
+      sh -c "pipenv run uvicorn main:app --host 0.0.0.0
+      "
+
+  bot:
+    build: .
+    volumes:
+      - .:/fast
+    env_file:
+      - .env
+    depends_on:
+      - api
+    command: >
+      sh -c "pipenv run python bot.py
+      "

@@ -18,7 +18,9 @@ async def update_inline_keyboard(callback_data: str, state: FSMContext) -> types
     async with state.proxy() as data:
         data['spiders'] = buttons
     keyboard_markup.add(*btn)
-    return keyboard_markup.add(start_button)
+    keyboard_markup.add(start_button)
+    back_button = types.InlineKeyboardButton('Назад', callback_data='back')
+    return keyboard_markup.add(back_button)
 
 
 def clear_button(buttons: list) -> list:

@@ -44,7 +44,7 @@ class Product:
 
     @classmethod
     def get_products_by_shop_id(cls, shop_name='wildbress'):
-        rs = requests.post(url=BASE_URL+f'/api/all_xlsx/wildbress')
+        rs = requests.post(url=BASE_URL+f'/api/all_xlsx/{shop_name}')
         return rs.content
 
     @classmethod

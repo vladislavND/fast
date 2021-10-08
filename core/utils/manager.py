@@ -17,7 +17,7 @@ from core.crud.shop import CRUDShop
 
 class Manager:
     def __init__(self, shop_name: str, find_date: date = date.today()):
-        self.shop_name = shop_name
+        self.shop_name = shop_name.lower()
         self.date = find_date
 
     def file_name(self) -> str:

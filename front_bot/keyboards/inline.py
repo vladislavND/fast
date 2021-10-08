@@ -22,15 +22,22 @@ def start_spiders():
     btn_text = ((spider, spider) for spider in spiders)
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     btn = (types.InlineKeyboardButton(text, callback_data=data) for text, data in btn_text)
-    return keyboard_markup.add(*btn)
+    keyboard_markup.add(*btn)
+    back_button = types.InlineKeyboardButton('Назад', callback_data='back')
+    return keyboard_markup.add(back_button)
 
 
 def shops():
     shops = Product.get_shops()
-    btn_text = ((shop['name'], shop['id']) for shop in shops)
+    btn_text = ((shop['name'], shop['name']) for shop in shops)
     keyboard_markup = types.InlineKeyboardMarkup(row_width=2)
     btn = (types.InlineKeyboardButton(text, callback_data=data) for text, data in btn_text)
-    return keyboard_markup.add(*btn)
+    keyboard_markup.add(*btn)
+    back_button = types.InlineKeyboardButton('Назад', callback_data='back')
+    return keyboard_markup.add(back_button)
 
 
-
+def back():
+    keyboard_markup = types.InlineKeyboardMarkup(row_width=1)
+    back_button = types.InlineKeyboardButton('Назад', callback_data='back')
+    return keyboard_markup.add(back_button)

@@ -1,3 +1,6 @@
+from asyncio import run
+
+
 from fastapi import FastAPI, Depends
 from sqlmodel import SQLModel, Session
 from pydantic import parse_obj_as
@@ -16,9 +19,11 @@ from core.models.products_rf import ProductRF
 from core.models.processed_product import ProcessedProduct
 from core.models.price import Price
 
+
 from core.crud.shop import CRUDShop
 from core.db.database import engine
 from sqlalchemy.exc import IntegrityError
+from front_bot.loader import dp, executor, bot
 
 
 app = FastAPI()
@@ -31,7 +36,8 @@ app.include_router(price_router, prefix='/api', tags=["Price"])
 
 
 @app.on_event('startup')
-def create_category(session: Session = Session(engine)):
+async def create_category(session: Session = Session(engine)):
+
     SQLModel.metadata.create_all(engine)
     try:
         shops = [
