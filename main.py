@@ -43,7 +43,7 @@ async def create_category(session: Session = Session(engine)):
         shops = [
             {'name': 'Utkonos', 'url': 'https://utkonos.ru', 'id': 3},
             {'name': 'Ecomarket', 'url': 'https://ecomarket.ru', 'id': 2},
-            {'name': 'Фундучок', 'url': 'https://фундучок.рф', 'id': 1},
+            {'name': 'Funduchok', 'url': 'https://фундучок.рф', 'id': 1},
             {'name': 'Vkusvill', 'url': 'https://vkusvill.ru', 'id': 4},
             {'name': 'Wildbress', 'url': 'https://vkusvill.ru', 'id': 5},
         ]
