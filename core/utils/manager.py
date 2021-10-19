@@ -1,6 +1,8 @@
 import json
+import re
 from datetime import date
 from typing import List
+import os
 
 import pandas as pd
 from pydantic import parse_obj_as
@@ -16,15 +18,23 @@ from core.crud.shop import CRUDShop
 
 
 class Manager:
-    def __init__(self, shop_name: str, find_date: date = date.today()):
+    def __init__(self, shop_name: str, file_name: str =None):
         self.shop_name = shop_name.lower()
-        self.date = find_date
+        self.file_name = file_name
 
-    def file_name(self) -> str:
-        return f"parse_files/{self.shop_name}/{self.shop_name}_{self.date}.csv"
+    def get_files_folders(self):
+        data = {}
+        files = os.listdir(f'parse_files/{self.shop_name}')
+        for file in files:
+            data.update({file: file})
+        return data
 
     def open(self) -> pd.DataFrame:
-        df = pd.read_csv(self.file_name(), sep=';', encoding='utf-8', low_memory=False, index_col=False)
+        directory_name = re.sub(r'[^A-Za-z]', '', self.shop_name).replace('csv', '')
+        df = pd.read_csv(
+            f'parse_files/{directory_name}/{self.shop_name}',
+            sep=';', encoding='utf-8', low_memory=False, index_col=False
+        )
         return df
 
     def find_by_article(self, article: int) -> pd.DataFrame:
@@ -45,8 +55,8 @@ class Manager:
         processed_crud = CRUDProcessed(ProcessedProduct)
         shop_crud = CRUDShop(Shop)
         shop_id = shop_crud.get_by_name(session, self.shop_name).id
-        processed_product = processed_crud.get_by_shop_id(session, shop_id)
-        print(processed_product)
+        processed_products = processed_crud.get_by_shop_id(session, shop_id)
+
         # TODO: Доделать аналитику
 
 

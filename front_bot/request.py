@@ -43,6 +43,14 @@ class Product:
         return rs.content
 
     @classmethod
+    def get_files_folder(cls, shop_name):
+        rs = requests.post(
+            url=BASE_URL+f'/api/get_files/{shop_name}'
+        )
+
+        return rs.json()
+
+    @classmethod
     def get_products_by_shop_id(cls, shop_name='wildbress'):
         rs = requests.post(url=BASE_URL+f'/api/all_xlsx/{shop_name}')
         return rs.content

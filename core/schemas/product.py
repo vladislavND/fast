@@ -41,9 +41,9 @@ class ProductListOut(BaseModel):
     __root__: List[ProductOut]
 
 
-
-
-
+class DirectoryFolders(BaseModel):
+    folder_id: str = None
+    folder: str = None
 
 
 

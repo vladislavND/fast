@@ -37,6 +37,15 @@ def shops():
     return keyboard_markup.add(back_button)
 
 
+def files_folders(files: dict):
+    btn_text = ((key, value) for key, value in files.items())
+    keyboard_markup = types.InlineKeyboardMarkup(row_width=1)
+    btn = (types.InlineKeyboardButton(text, callback_data=data) for text, data in btn_text)
+    keyboard_markup.add(*btn)
+    back_button = types.InlineKeyboardButton('Назад', callback_data='back')
+    return keyboard_markup.add(back_button)
+
+
 def back():
     keyboard_markup = types.InlineKeyboardMarkup(row_width=1)
     back_button = types.InlineKeyboardButton('Назад', callback_data='back')

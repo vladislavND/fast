@@ -6,6 +6,7 @@ class UserState(StatesGroup):
 
     url = State()
     spider = State()
+    folders = State()
     shop = State()
     runs = State()
     processed = State()
