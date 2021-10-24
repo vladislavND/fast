@@ -1,5 +1,6 @@
 import scrapy
 import requests
+from datetime import date
 
 from parsing.methods import telegram_info
 from core.utils.manager import Manager
@@ -10,7 +11,7 @@ class UtkonosSpider(scrapy.Spider):
     allowed_domains = ['www.utkonos.ru',]
     HEADERS = {'content-type': 'multipart/form-data; boundary=----WebKitFormBoundaryvOKTepCjBBVARAbu'}
     category = []
-    manager = Manager(shop_name=f'{name}.csv')
+    manager = Manager(shop_name=f'{name}_{date.today()}.csv')
 
     def start_requests(self):
         url = 'https://www.utkonos.ru/api/v1/goodsCategoriesTreeByChildGet'

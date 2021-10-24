@@ -1,5 +1,6 @@
 import re
 import unicodedata
+from datetime import date
 
 from scrapy.spiders import SitemapSpider
 
@@ -10,7 +11,7 @@ from core.utils.manager import Manager
 class VkusvillSpider(SitemapSpider):
     name = "vkusvill"
     sitemap_urls = ['https://vkusvill.ru/upload/sitemap/msk/sitemap_goods.xml',]
-    manager = Manager(shop_name=f'{name}.csv')
+    manager = Manager(shop_name=f'{name}_{date.today()}.csv')
 
     def parse(self, response, **kwargs):
         if response.xpath('//img[@class="lazyload"]/@title').get() is not None:

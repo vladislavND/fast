@@ -1,4 +1,5 @@
 import re
+from datetime import date
 
 from scrapy.spiders import SitemapSpider
 
@@ -9,7 +10,7 @@ from core.utils.manager import Manager
 class FunduchokSpider(SitemapSpider):
     name = "funduchok"
     sitemap_urls = ['https://xn--d1amhfwcd2a.xn--p1ai/sitemap.xml',]
-    manager = Manager(shop_name=f'{name}.csv')
+    manager = Manager(shop_name=f'{name}_{date.today()}.csv')
 
     def get_price_to_kg(self, price_block):
         block = price_block.xpath('//label[@class="label label--packaging-card"]')
