@@ -160,12 +160,11 @@ async def run_processed(message: types.Message, state: UserState):
     file = await bot.download_file(file.file_path)
     state_data = await state.get_data()
     shop_id = state_data['shop_id']
-    Product.send_processing_product(file=file, shop_id=int(shop_id))
-    await bot.send_message(
-        chat_id=message.from_user.id,
-        text='Файл отправлен'
+    file = Product.send_processing_product(file=file, shop_id=shop_id)
+    await bot.send_document(
+        message.from_user.id,
+        (f'analise_products.xlsx', file)
     )
-
 
 
 if __name__ == '__main__':

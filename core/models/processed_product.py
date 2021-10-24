@@ -11,6 +11,8 @@ class ProcessedProductBase(SQLModel):
     price: Decimal
     price_rf: Optional[Decimal] = None
     sale_price: Optional[Decimal] = None
+    different_price: Optional[Decimal] = None
+    name: str
     date: datetime.date = datetime.date.today()
     article: str
     article_rf: str

@@ -62,10 +62,19 @@ class Product:
 
     @classmethod
     def send_processing_product(cls, shop_id, file):
-        requests.post(
-            url=BASE_URL + f'/api/processed_product_xlsx/{shop_id}',
+        mapping = {
+            'Ecomarket': 2,
+            'Utkonos': 3,
+            'Vkusvill': 4,
+            'Wildbress': 5,
+            'Funduchok': 1
+        }
+        file = requests.post(
+            url=BASE_URL + f'/api/processed_product_xlsx/{mapping[shop_id]}',
             files={'file': ('report.xls', file, 'application/vnd.ms-excel',)}
         )
+        return file.content
+
 
 
 

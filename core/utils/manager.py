@@ -57,6 +57,7 @@ class Manager:
         shop_id = shop_crud.get_by_name(session, self.shop_name).id
         processed_products = processed_crud.get_by_shop_id(session, shop_id)
 
+
         # TODO: Доделать аналитику
 
 

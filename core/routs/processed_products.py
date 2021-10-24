@@ -1,11 +1,14 @@
 from typing import List
+import io
 
 from fastapi import APIRouter, Depends, UploadFile, File
 from sqlmodel import Session
+from starlette.responses import StreamingResponse
 
 from core.db.dependecy import get_db
 from core.crud.processed_product import CRUDProcessed
 from core.models.processed_product import ProcessedProduct
+from core.processed.manager import AnaliseProducts
 
 router = APIRouter()
 crud = CRUDProcessed(model=ProcessedProduct())
@@ -21,7 +24,7 @@ def get_processed_product(product_id: int, session: Session = Depends(get_db)):
     return crud.get(session=session, obj_id=product_id)
 
 
-@router.post('/processed_product_xlsx/{shop_id}')
+@router.post('/processed_product_xlsx/{shop_id}', response_class=StreamingResponse)
 async def processed_product_xlsx(
         shop_id: int,
         file: UploadFile = File(
@@ -32,4 +35,12 @@ async def processed_product_xlsx(
 ):
     file = await file.read()
     crud.add_processed_products(file=file, shop_id=shop_id, session=session)
+    df = AnaliseProducts().price_difference()
+    to_write = io.BytesIO()
+    df.to_excel(to_write, index=False)
+    to_write.seek(0)
+    return StreamingResponse(to_write, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+
+
 

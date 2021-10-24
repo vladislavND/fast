@@ -36,14 +36,15 @@ class CRUDProcessed(CRUDBase):
             )
             product_rf = crud_rf.get_product_rf_by_article(
                 session=session,
-                article=articles_rf[index]
+                article=str(articles_rf[index]),
             )
             if product and product_rf:
                 processed_product = ProcessedProduct(
                     price=product.price, price_rf=product_rf.price,
                     sale_price=product.sale_price, article=str(product.article),
                     article_rf=product_rf.article, shop_id=shop_id,
-                    date=datetime.datetime.now()
+                    date=datetime.datetime.now(),  different_price=product.price - product_rf.price,
+                    name=product_rf.name
                 )
                 session.add(processed_product)
         session.commit()
