@@ -17,7 +17,9 @@ class PriceShopParser:
             'ecomarket.ru': self.price_ecomarket,
             'www.utkonos.ru': self.price_utkonos,
             'vkusvill.ru': self.price_vkusvill,
-            'www.wildberries.ru': self.price_wildberries
+            'www.wildberries.ru': self.price_wildberries,
+            'www.delikateska.ru': self.price_delicateska,
+
         }
         key = re.search('https?://([А-Яа-яA-Za-z_0-9.-]+).*', url)
         if key:
@@ -137,6 +139,19 @@ class PriceShopParser:
             shop='вкусвилл'
         )
 
+        return data
+
+    def price_delicateska(self, url: str):
+        rs = request(method='GET', url=url).text
+        soup = BeautifulSoup(rs, 'lxml')
+        data = dict(
+            name=soup.find('h1', class_='title').text,
+            price=soup.find('div', itemprop='price').get('content'),
+            article=re.sub('[^0-9]', '', soup.find('span', class_='article').text),
+            url=url,
+            shop='Деликатеска'
+
+        )
         return data
 
     def compare(self, url, product_id=None):
