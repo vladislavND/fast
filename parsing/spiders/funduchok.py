@@ -9,7 +9,7 @@ from core.utils.manager import Manager
 class FunduchokSpider(SitemapSpider):
     name = "funduchok"
     sitemap_urls = ['https://xn--d1amhfwcd2a.xn--p1ai/sitemap.xml',]
-    manager = Manager(shop_name=name)
+    manager = Manager(shop_name=f'{name}.csv')
 
     def get_price_to_kg(self, price_block):
         block = price_block.xpath('//label[@class="label label--packaging-card"]')

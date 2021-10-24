@@ -14,7 +14,7 @@ class EcomarketSpider(scrapy.Spider):
     allowed_domains = ['api.ecomarket.ru',]
     category = []
     articles = []
-    manager = Manager(shop_name=name)
+    manager = Manager(shop_name=f'{name}.csv')
 
     def start_requests(self):
         data = {"action":"appStartUp_v3","REGION":"77","AB_CASE":"A","token":"9a32530d9947fdfc546cb2931d6a750e"}

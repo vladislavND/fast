@@ -10,7 +10,7 @@ class UtkonosSpider(scrapy.Spider):
     allowed_domains = ['www.utkonos.ru',]
     HEADERS = {'content-type': 'multipart/form-data; boundary=----WebKitFormBoundaryvOKTepCjBBVARAbu'}
     category = []
-    manager = Manager(shop_name=name)
+    manager = Manager(shop_name=f'{name}.csv')
 
     def start_requests(self):
         url = 'https://www.utkonos.ru/api/v1/goodsCategoriesTreeByChildGet'

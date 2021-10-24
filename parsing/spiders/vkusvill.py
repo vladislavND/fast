@@ -10,7 +10,7 @@ from core.utils.manager import Manager
 class VkusvillSpider(SitemapSpider):
     name = "vkusvill"
     sitemap_urls = ['https://vkusvill.ru/upload/sitemap/msk/sitemap_goods.xml',]
-    manager = Manager(shop_name=name)
+    manager = Manager(shop_name=f'{name}.csv')
 
     def parse(self, response, **kwargs):
         if response.xpath('//img[@class="lazyload"]/@title').get() is not None:
