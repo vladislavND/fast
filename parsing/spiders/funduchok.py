@@ -5,12 +5,15 @@ from scrapy.spiders import SitemapSpider
 
 from parsing.methods import telegram_info
 from core.utils.manager import Manager
+from parsing.request import create_path
 
 
 class FunduchokSpider(SitemapSpider):
     name = "funduchok"
     sitemap_urls = ['https://xn--d1amhfwcd2a.xn--p1ai/sitemap.xml',]
-    manager = Manager(shop_name=f'{name}_{date.today()}.csv')
+    file_name = f'{name}_{date.today()}.csv'
+    shop_id = 1
+    manager = Manager(file_name=file_name, shop_id=shop_id)
 
     def get_price_to_kg(self, price_block):
         block = price_block.xpath('//label[@class="label label--packaging-card"]')
@@ -53,9 +56,13 @@ class FunduchokSpider(SitemapSpider):
             pass
 
     def close(self, reason):
-        self.manager.create(shop_id=1)
+        create_path(
+            file_name=self.file_name,
+            path='parse_files/funduchok',
+            shop_id=self.shop_id
+        )
+        self.manager.create()
         telegram_info(self.name)
-
 
 
 

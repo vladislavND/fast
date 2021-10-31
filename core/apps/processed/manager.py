@@ -1,11 +1,9 @@
-import io
-
 import pandas as pd
 from sqlmodel import Session
 from core.db.database import engine
 
-from core.crud.processed_product import CRUDProcessed
-from core.models.processed_product import ProcessedProduct
+from core.apps.processed.crud import CRUDProcessed
+from core.apps.processed.models import ProcessedProduct
 
 
 class AnaliseProducts:
@@ -13,7 +11,8 @@ class AnaliseProducts:
         self.processed = CRUDProcessed(ProcessedProduct)
 
     def price_difference(self):
-        price, sale_price, price_rf, different_price, article, article_rf, shop_id, name = [], [], [], [], [], [], [], []
+        price, sale_price, price_rf, different_price, \
+        article, article_rf, shop_id, name, weight, price_rf_kg, price_kg = [], [], [], [], [], [], [], [], [], [], []
         products = self.processed.get_all(Session(engine))
         mapping = {
             2: 'Ecomarket',
@@ -31,10 +30,17 @@ class AnaliseProducts:
             article_rf.append(product.article_rf)
             shop_id.append(mapping[product.shop_id])
             name.append(product.name)
-        headers = ['Цена магазина', 'Цена со скидкой', 'Цена РФ', 'Разница в цене', 'Артикул', 'Артикул рф', 'Магазин', 'Наименование']
+            weight.append(product.weight)
+            price_rf_kg.append(product.price_rf_kg)
+            price_kg.append(product.price_kg)
+        headers = ['Цена магазина', 'Цена со скидкой', 'Цена РФ', 'Разница в цене',
+                   'Артикул', 'Артикул рф', 'Магазин', 'Наименование', 'Вес', 'Цена за кг РФ', 'Цена за кг']
         df = pd.DataFrame(
             list(
-                zip(price, sale_price, price_rf, different_price, article, article_rf, shop_id, name)
+                zip(
+                    price, sale_price, price_rf, different_price, article,
+                    article_rf, shop_id, name, weight, price_rf_kg, price_kg
+                    )
             ), columns=headers
         )
 

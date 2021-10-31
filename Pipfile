@@ -7,7 +7,6 @@ name = "pypi"
 fastapi = {extras = ["all"], version = "*"}
 psycopg2-binary = "*"
 passlib = "*"
-
 scrapyd-client = "*"
 twisted = "*"
 scrapy = "==2.4.1"
@@ -17,8 +16,8 @@ pandas = "*"
 openpyxl = "*"
 sqlmodel = "*"
 sqlalchemy = "*"
-
 scrapyd = "*"
+celery = "*"
 
 [dev-packages]
 

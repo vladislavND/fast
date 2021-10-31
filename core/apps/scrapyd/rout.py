@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from core.crud.scrapyd import crud_scrapyd
-from core.schemas.scrapyd import ListSpiders, Schedule, ResponseSchedule, Jobs, StopSpider
+from core.apps.scrapyd.crud import crud_scrapyd
+from core.apps.scrapyd.schema import ListSpiders, Schedule, ResponseSchedule, Jobs, StopSpider
 
 router = APIRouter()
 

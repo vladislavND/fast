@@ -32,7 +32,11 @@ def clear_button(buttons: list) -> list:
     return clear_buttons
 
 
-
+def to_string(data) -> str:
+    msg = f"Наименование: {data.get('name')}\nЦена: {data.get('price')}\nМагазин: {data.get('shop')}\n" \
+          f"Артикул: {data.get('article')}\nUrl: {data.get('url')}\nЦена со скидкой: {data.get('sale_price')}\n" \
+          f"Разница в цене: {data.get('different_price')}"
+    return msg
 
 
 

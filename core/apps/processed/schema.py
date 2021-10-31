@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from core.schemas.product import ProductBase
+from core.apps.products.schema import ProductBase
 
 
 class ProcessedProduct(ProductBase):

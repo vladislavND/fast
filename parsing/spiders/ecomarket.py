@@ -8,6 +8,7 @@ import requests
 
 from parsing.methods import telegram_info
 from core.utils.manager import Manager
+from parsing.request import create_path
 
 
 class EcomarketSpider(scrapy.Spider):
@@ -15,7 +16,9 @@ class EcomarketSpider(scrapy.Spider):
     allowed_domains = ['api.ecomarket.ru',]
     category = []
     articles = []
-    manager = Manager(shop_name=f'{name}_{date.today()}.csv')
+    file_name = f'{name}_{date.today()}.csv'
+    shop_id = 2
+    manager = Manager(shop_id=shop_id, file_name=file_name)
 
     def start_requests(self):
         data = {"action":"appStartUp_v3","REGION":"77","AB_CASE":"A","token":"9a32530d9947fdfc546cb2931d6a750e"}
@@ -64,7 +67,12 @@ class EcomarketSpider(scrapy.Spider):
             yield product
 
     def close(self, reason):
-        self.manager.create(shop_id=2)
+        create_path(
+            file_name=self.file_name,
+            path='parse_files/ecomarket',
+            shop_id=self.shop_id
+        )
+        self.manager.create()
         telegram_info(self.name)
 
 

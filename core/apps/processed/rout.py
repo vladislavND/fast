@@ -6,9 +6,9 @@ from sqlmodel import Session
 from starlette.responses import StreamingResponse
 
 from core.db.dependecy import get_db
-from core.crud.processed_product import CRUDProcessed
-from core.models.processed_product import ProcessedProduct
-from core.processed.manager import AnaliseProducts
+from core.apps.processed.crud import CRUDProcessed
+from core.apps.processed.models import ProcessedProduct
+from core.apps.processed.manager import AnaliseProducts
 
 router = APIRouter()
 crud = CRUDProcessed(model=ProcessedProduct())

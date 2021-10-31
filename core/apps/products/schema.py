@@ -42,8 +42,8 @@ class ProductListOut(BaseModel):
 
 
 class DirectoryFolders(BaseModel):
-    folder_id: str = None
-    folder: str = None
+    file_name: str
+    shop_id: int
 
 
 

@@ -4,13 +4,16 @@ from decimal import Decimal
 
 from sqlmodel import SQLModel, Field, Relationship
 
-from core.models.shop import Shop
+from core.apps.shop.models import Shop
 
 
 class ProductBase(SQLModel):
+    name: str
     article: Optional[str] = None
     price: Optional[Decimal] = None
     sale_price: Optional[Decimal] = None
+    weight: Optional[str] = None
+    unit: Optional[str] = None
     date: datetime.date = datetime.date.today()
     shop_id: Optional[int] = Field(default=None, foreign_key='shop.id')
     shop: List[Shop] = Relationship(back_populates="products")

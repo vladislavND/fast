@@ -6,12 +6,15 @@ from scrapy.spiders import SitemapSpider
 
 from parsing.methods import telegram_info
 from core.utils.manager import Manager
+from parsing.request import create_path
 
 
 class VkusvillSpider(SitemapSpider):
     name = "vkusvill"
     sitemap_urls = ['https://vkusvill.ru/upload/sitemap/msk/sitemap_goods.xml',]
-    manager = Manager(shop_name=f'{name}_{date.today()}.csv')
+    file_name = f'{name}_{date.today()}.csv'
+    shop_id = 4
+    manager = Manager(file_name=file_name, shop_id=shop_id)
 
     def parse(self, response, **kwargs):
         if response.xpath('//img[@class="lazyload"]/@title').get() is not None:
@@ -42,7 +45,12 @@ class VkusvillSpider(SitemapSpider):
             pass
 
     def close(self, reason):
-        self.manager.create(shop_id=4)
+        create_path(
+            file_name=self.file_name,
+            path='parse_files/vkusvill',
+            shop_id=self.shop_id
+        )
+        self.manager.create()
         telegram_info(self.name)
 
 

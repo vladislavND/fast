@@ -1,30 +1,20 @@
-from asyncio import run
-
-
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from sqlmodel import SQLModel, Session
 from pydantic import parse_obj_as
 from typing import List
 
-from core.routs.product import router as product_router
-from core.routs.shop import router as shop_router
-from core.routs.price import router as price_router
-from core.routs.user import router as user_router
-from core.routs.scrapyd import router as scrapyd_router
-from core.routs.processed_products import router as processed_products_router
+from core.apps.products.rout import router as product_router
+from core.apps.shop.rout import router as shop_router
+from core.apps.price.rout import router as price_router
+from core.apps.users.rout import router as user_router
+from core.apps.scrapyd.rout import router as scrapyd_router
+from core.apps.processed.rout import router as processed_products_router
 
-from core.models.shop import Shop
-from core.models.product import Product
-from core.models.products_rf import ProductRF
-from core.models.processed_product import ProcessedProduct
-from core.models.price import Price
+from core.apps.shop.models import Shop
 
-
-from core.crud.shop import CRUDShop
+from core.apps.shop.crud import CRUDShop
 from core.db.database import engine
 from sqlalchemy.exc import IntegrityError
-from front_bot.loader import dp, executor, bot
-
 
 app = FastAPI()
 app.include_router(product_router, prefix="/api", tags=["Product"])

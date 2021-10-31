@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from sqlmodel import Session, select
 
-from core.crud.base import CRUDBase
-from core.models.user import User
+from core.apps.crud_base import CRUDBase
+from core.apps.users.models import User
 from core.utils.security import get_password_hash
 
 

@@ -5,7 +5,7 @@ from aiogram.types import BotCommand
 # from dotenv import load_dotenv
 # load_dotenv()
 
-BOT_TOKEN = '1055601888:AAHBnyFdyPoAb_or3KDMSXHgjY9y8IpZXO0'
+BOT_TOKEN = os.getenv('TOKEN')
 
 commands = [
         BotCommand(command="/send", description="Подать объявление"),

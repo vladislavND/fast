@@ -1,7 +1,7 @@
 from sqlmodel import Session, select
 
-from core.crud.base import CRUDBase
-from core.models.product import Product
+from core.apps.crud_base import CRUDBase
+from core.apps.products.models import Product
 
 
 class CRUDProduct(CRUDBase):

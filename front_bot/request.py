@@ -1,85 +1,31 @@
 import os
 
 import requests
-from requests import request
-
-BASE_URL = os.getenv('BASE_URL')
+from requests.models import Response
 
 
-class Request:
+class BotRequest:
+    def __init__(self):
+        self.url = os.getenv('BASE_URL')
 
-    def get_price(self, url) -> str:
-        rs = request(url=BASE_URL+'/api/price', method='POST', json={'url': url})
-        text = self.format_dict_to_string(rs.json())
-        return text
-
-    def get_all_price(self, article: str) -> str:
-        rs = request(url=BASE_URL+f'/api/price/{article}', method='GET')
-        text = self.format_dict_to_string(rs.json())
-        return text
-
-    def format_dict_to_string(self, data: dict) -> str:
-        msg = f"Наименование: {data.get('name')}\nЦена: {data.get('price')}\nМагазин: {data.get('shop')}\n" \
-              f"Артикул: {data.get('article')}\nUrl: {data.get('url')}\nЦена со скидкой: {data.get('sale_price')}\n" \
-              f"Разница в цене: {data.get('different_price')}"
-        return msg
-
-    def get_spiders(self) -> list:
-        data = request(method='GET', url=BASE_URL+'/api/scrapyd/parsing')
-        return ['□ ' + spider for spider in data.json()]
-
-    @classmethod
-    def start_spider(cls, spiders: list):
-        for spider in spiders:
-            data = {'spider': spider}
-            request(method='POST', url=BASE_URL+'/api/scrapyd/run', json=data)
-
-
-class Product:
-
-    @classmethod
-    def get_xlsx_products(cls):
-        rs = requests.post(url=BASE_URL+'/api/all_xlsx')
-        return rs.content
-
-    @classmethod
-    def get_files_folder(cls, shop_name):
-        rs = requests.post(
-            url=BASE_URL+f'/api/get_files/{shop_name}'
+    def post(self, endpoint: str, data: dict = None) -> Response:
+        response = requests.post(
+            url=self.url + endpoint,
+            json=data
         )
+        return response
 
-        return rs.json()
+    def get(self, endpoint: str) -> Response:
+        response = requests.get(
+            url=self.url + endpoint
+        )
+        return response
 
-    @classmethod
-    def get_products_by_shop_id(cls, shop_name='wildbress'):
-        rs = requests.post(url=BASE_URL+f'/api/all_xlsx/{shop_name}')
-        return rs.content
-
-    @classmethod
-    def get_shops(cls):
-        rs = requests.get(url=BASE_URL+'/api/shops')
-        return rs.json()
-
-    @classmethod
-    def send_processing_product(cls, shop_id, file):
-        mapping = {
-            'Ecomarket': 2,
-            'Utkonos': 3,
-            'Vkusvill': 4,
-            'Wildbress': 5,
-            'Funduchok': 1
-        }
+    def send_processing_product(self, shop_id, file):
         file = requests.post(
-            url=BASE_URL + f'/api/processed_product_xlsx/{mapping[shop_id]}',
+            url=self.url + f'/api/processed_product_xlsx/{shop_id}',
             files={'file': ('report.xls', file, 'application/vnd.ms-excel',)}
         )
         return file.content
-
-
-
-
-
-
-
 
 

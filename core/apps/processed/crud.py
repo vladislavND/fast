@@ -4,12 +4,10 @@ import typing
 import pandas as pd
 from sqlmodel import Session, select
 
-from core.crud.base import CRUDBase
-from core.crud.product import CRUDProduct
-from core.crud.rf_product import CRUDRF
-from core.models.product import Product
-from core.models.products_rf import ProductRF
-from core.models.processed_product import ProcessedProduct
+from core.apps.crud_base import CRUDBase
+from core.apps.products.crud import CRUDProduct
+from core.apps.products.models import Product
+from core.apps.processed.models import ProcessedProduct
 
 
 class CRUDProcessed(CRUDBase):
@@ -20,12 +18,13 @@ class CRUDProcessed(CRUDBase):
         return products
 
     def add_processed_products(self, session: Session, file: typing.ByteString, shop_id: int):
-        crud_rf = CRUDRF(ProductRF)
         crud_product = CRUDProduct(Product)
         file = pd.read_excel(file)
         df = file.fillna(0)
         articles_product = [i for i in df[df.columns[5]]]
         articles_rf = [i for i in df[df.columns[0]]]
+        price_rf_kg = [i for i in df[df.columns[4]]]
+        price_rf = [i for i in df[df.columns[3]]]
         index = -1
         for article in articles_product:
             index += 1
@@ -34,17 +33,13 @@ class CRUDProcessed(CRUDBase):
                 article=article,
                 shop_id=shop_id
             )
-            product_rf = crud_rf.get_product_rf_by_article(
-                session=session,
-                article=str(articles_rf[index]),
-            )
-            if product and product_rf:
+            if product:
                 processed_product = ProcessedProduct(
-                    price=product.price, price_rf=product_rf.price,
+                    price=product.price, price_rf=price_rf[index],
                     sale_price=product.sale_price, article=str(product.article),
-                    article_rf=product_rf.article, shop_id=shop_id,
-                    date=datetime.datetime.now(),  different_price=product.price - product_rf.price,
-                    name=product_rf.name
+                    article_rf=articles_rf[index], shop_id=shop_id,
+                    date=datetime.datetime.now(),  price_rf_kg=price_rf_kg[index],
+                    name=product.name, weight=product.weight, unit=product.unit
                 )
                 session.add(processed_product)
         session.commit()

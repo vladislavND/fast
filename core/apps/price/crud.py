@@ -4,8 +4,8 @@ from typing import List
 from sqlmodel import Session, select
 
 
-from core.crud.base import CRUDBase
-from core.models.price import Price
+from core.apps.crud_base import CRUDBase
+from core.apps.price.models import Price
 
 
 class CRUDPrice(CRUDBase):

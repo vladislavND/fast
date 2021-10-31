@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session
 
 from core.db.dependecy import get_db
-from core.crud.user import CRUDUser
-from core.models.user import User, UserBase
+from core.apps.users.crud import CRUDUser
+from core.apps.users.models import User, UserBase
 
 router = APIRouter()
 crud = CRUDUser(User)

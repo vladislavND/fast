@@ -4,6 +4,7 @@ from datetime import date
 
 from parsing.methods import telegram_info
 from core.utils.manager import Manager
+from parsing.request import create_path
 
 
 class UtkonosSpider(scrapy.Spider):
@@ -11,7 +12,9 @@ class UtkonosSpider(scrapy.Spider):
     allowed_domains = ['www.utkonos.ru',]
     HEADERS = {'content-type': 'multipart/form-data; boundary=----WebKitFormBoundaryvOKTepCjBBVARAbu'}
     category = []
-    manager = Manager(shop_name=f'{name}_{date.today()}.csv')
+    file_name = f'{name}_{date.today()}.csv'
+    shop_id = 3
+    manager = Manager(shop_id=shop_id, file_name=file_name)
 
     def start_requests(self):
         url = 'https://www.utkonos.ru/api/v1/goodsCategoriesTreeByChildGet'
@@ -56,7 +59,12 @@ class UtkonosSpider(scrapy.Spider):
                         break
 
     def close(self, reason):
-        self.manager.create(shop_id=3)
+        create_path(
+            file_name=self.file_name,
+            path='parse_files/utkonos',
+            shop_id=self.shop_id
+        )
+        self.manager.create()
         telegram_info(self.name)
 
 

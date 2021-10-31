@@ -4,14 +4,13 @@ import io
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from starlette import status
-from starlette.responses import StreamingResponse, FileResponse
+from starlette.responses import StreamingResponse
 
-
+from core.apps.products.schema import DirectoryFolders
 from core.db.dependecy import get_db
-from core.crud.product import CRUDProduct
-from core.models.product import ProductBase, Product
+from core.apps.products.crud import CRUDProduct
+from core.apps.products.models import ProductBase, Product
 from core.utils.manager import Manager
-from core.schemas.product import DirectoryFolders
 
 router = APIRouter()
 crud = CRUDProduct(Product)
@@ -41,20 +40,9 @@ def create_products(products: List[ProductBase], session: Session = Depends(get_
     return 'Successfully created products'
 
 
-@router.post('/get_files/{shop_name}')
-def directory_files(shop_name: str):
-    try:
-        files = Manager(shop_name=shop_name).get_files_folders()
-        return files
-    except:
-        return {'Файлы отсутствуют': 'Файлы отсутствуют'}
-
-
-
-
-@router.post('/all_xlsx/{shop_name}', response_class=StreamingResponse)
-def get_all_products(shop_name: str):
-    df = Manager(shop_name=shop_name).open()
+@router.post('/all_xlsx', response_class=StreamingResponse)
+def get_all_products(data: DirectoryFolders):
+    df = Manager(shop_id=data.shop_id, file_name=data.file_name).open()
     to_write = io.BytesIO()
     df.to_excel(to_write, index=False)
     to_write.seek(0)
