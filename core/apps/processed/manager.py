@@ -19,7 +19,8 @@ class AnaliseProducts:
             3: 'Utkonos',
             4: 'Vkusvill',
             5: 'Wildbress',
-            1: 'Funduchok'
+            1: 'Funduchok',
+            6: 'Riboedov'
         }
         for product in products:
             price.append(product.price)

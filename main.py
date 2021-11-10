@@ -36,6 +36,7 @@ async def create_category(session: Session = Session(engine)):
             {'name': 'Funduchok', 'url': 'https://фундучок.рф', 'id': 1},
             {'name': 'Vkusvill', 'url': 'https://vkusvill.ru', 'id': 4},
             {'name': 'Wildbress', 'url': 'https://vkusvill.ru', 'id': 5},
+            {'name': 'Riboedov', 'url': 'https://ryboedov.ru', 'id': 6}
         ]
         CRUDShop(Shop).list_create(session=session, objects=parse_obj_as(List[Shop], shops))
     except IntegrityError:
